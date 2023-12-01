@@ -59,9 +59,11 @@ jobs:
       - name: remove old dep 
       #  run: echo "kubectl delete deployment micro" > /root/.signature; cat /root/.signature
         run: kubectl delete deployment micro-notes
+      - name: remove old dep 
         run: kubectl delete deployment micro-agenda
 
       - name: create new dep 
       #  run: echo "kubectl create deployment micro --image yukiiso/micro" > /root/.signature; cat /root/.signature
         run: kubectl create deployment micro-notes --image ${{ secrets.DOCKER_USERNAME }}/micro-notes
+      - name: create new dep 
         run: kubectl create deployment micro-agenda --image ${{ secrets.DOCKER_USERNAME }}/micro-agenda
