@@ -52,8 +52,11 @@ jobs:
           #runs-on: self-hosted
           #steps:
       - name: login vsphere kubectl 
-        run: echo "/root/K8s_setup_Yuki.sh" > /root/.signature; cat /root/.signature
+      #  run: echo "/root/K8s_setup_Yuki.sh" > /root/.signature; cat /root/.signature
+        run: /root/K8s_setup_Yuki.sh
       - name: remove old dep 
-        run: echo "kubectl delete deployment micro" > /root/.signature; cat /root/.signature
+      #  run: echo "kubectl delete deployment micro" > /root/.signature; cat /root/.signature
+        run: kubectl delete deployment micro
       - name: create new dep 
-        run: echo "kubectl create deployment micro --image yukiiso/micro" > /root/.signature; cat /root/.signature
+      #  run: echo "kubectl create deployment micro --image yukiiso/micro" > /root/.signature; cat /root/.signature
+        run: kubectl create deployment micro --image ${{ secrets.DOCKER_USERNAME }}/micro

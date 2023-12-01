@@ -24,4 +24,4 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o /hello-world
 EXPOSE 8080
 
 # Run
-CMD ["/docker-gs-ping"]
+CMD ["/hello-world"]
