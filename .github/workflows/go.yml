@@ -27,11 +27,17 @@ jobs:
       with:
         go-version: '1.21.2'
 
-    - name: Build
-      run: go build -v ./...
+    - name: Build agenda
+      run: go build -v ./agenda/...
 
-    - name: Test
-      run: go test -v ./...
+    - name: Build notes
+      run: go build -v ./notes/...
+
+    - name: Test agenda
+      run: go test -v ./agenda/...
+    
+    - name: Test notes
+      run: go test -v ./notes/...
     
   build:
     runs-on: self-hosted
