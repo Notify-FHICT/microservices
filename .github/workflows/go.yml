@@ -42,11 +42,13 @@ jobs:
         run:  docker login -u '${{ secrets.DOCKER_USERNAME }}' -p '${{ secrets.DOCKER_PASSWORD }}'
       
       - name: Build the Docker image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/micro .
+        #run: docker build -t ${{ secrets.DOCKER_USERNAME }}/micro .
+        run: docker compose up 
 
 
       - name: Push to docker registry
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/micro
+        #run: docker push ${{ secrets.DOCKER_USERNAME }}/micro
+        run: docker compose push
           #start_on_k8:
           #name: start on k8 
           #runs-on: self-hosted
@@ -56,7 +58,10 @@ jobs:
         run: /root/K8s_setup_Yuki.sh
       - name: remove old dep 
       #  run: echo "kubectl delete deployment micro" > /root/.signature; cat /root/.signature
-        run: kubectl delete deployment micro
+        run: kubectl delete deployment micro-notes
+        run: kubectl delete deployment micro-agenda
+
       - name: create new dep 
       #  run: echo "kubectl create deployment micro --image yukiiso/micro" > /root/.signature; cat /root/.signature
-        run: kubectl create deployment micro --image ${{ secrets.DOCKER_USERNAME }}/micro
+        run: kubectl create deployment micro-notes --image ${{ secrets.DOCKER_USERNAME }}/micro-notes
+        run: kubectl create deployment micro-agenda --image ${{ secrets.DOCKER_USERNAME }}/micro-agenda

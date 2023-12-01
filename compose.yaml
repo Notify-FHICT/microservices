@@ -1,0 +1,12 @@
+services:
+  agenda:
+    image: yukiiso/micro-agenda
+    build: ./agenda
+    ports:
+    - "80:80"
+
+  notes:
+    image: yukiiso/micro-notes
+    build: ./notes
+    ports:
+    - "80:80"
