@@ -42,7 +42,7 @@ jobs:
         run:  docker login -u '${{ secrets.DOCKER_USERNAME }}' -p '${{ secrets.DOCKER_PASSWORD }}'
       
       - name: Build the Docker image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/micro . --network=host
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/micro .
 
 
       - name: Push to docker registry
