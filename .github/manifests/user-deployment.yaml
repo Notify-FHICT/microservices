@@ -21,7 +21,4 @@ spec:
         - containerPort: 3000
           name: rest
           protocol: TCP
-        envFrom:
-        - configMapRef:
-            name: user
  

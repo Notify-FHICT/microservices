@@ -88,7 +88,7 @@ jobs:
             .github/manifests/user-deployment.yaml
           namespace: i442651
           images: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main
 
   # build:
   #   runs-on: self-hosted
