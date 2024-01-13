@@ -9,7 +9,7 @@ func main() {
 		return c.SendString("Hello, User!")
 	})
 
-	app.Get("/api/*", func(c *fiber.Ctx) error {
+	app.Get("/api/user/*", func(c *fiber.Ctx) error {
 		return c.SendString("API path: " + c.Params("*"))
 		// => API path: user/john
 	})
