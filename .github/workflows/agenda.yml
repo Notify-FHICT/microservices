@@ -2,7 +2,7 @@ name: agenda
 
 on:
   push:
-    paths:
+    paths: 
       - "agenda/**"
       - ".github/workflows/**"
     branches:

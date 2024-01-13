@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: tags
+  name: user
   namespace: i442651
 spec:
   progressDeadlineSeconds: 300

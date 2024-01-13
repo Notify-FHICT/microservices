@@ -95,7 +95,7 @@ jobs:
             .github/manifests/user-deployment.yaml
           namespace: i442651
           images: |
-            ghcr.io/notify-fhict/microservices/${{ env.IMAGE_NAME }}:main
+            ghcr.io/notify-fhict/microservices/${{ env.IMAGE_NAME }}
 
   # build:
   #   runs-on: self-hosted
