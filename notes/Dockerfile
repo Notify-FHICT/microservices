@@ -23,5 +23,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o /service
 # https://docs.docker.com/engine/reference/builder/#expose
 EXPOSE 3000
 
+LABEL org.opencontainers.image.source=https://github.com/notify-fhict/microservices/notes
+
 # Run
 CMD ["/service"]
