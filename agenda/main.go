@@ -5,7 +5,7 @@ import "github.com/gofiber/fiber/v2"
 func main() {
 	app := fiber.New()
 
-	app.Get("/agenda", func(c *fiber.Ctx) error {
+	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello, Agenda!")
 	})
 
@@ -14,5 +14,5 @@ func main() {
 		// => API path: user/john
 	})
 
-	app.Listen(":80")
+	app.Listen(":3000")
 }

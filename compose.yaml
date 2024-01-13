@@ -3,10 +3,28 @@ services:
     image: yukiiso/micro-agenda
     build: ./agenda
     ports:
-    - "80:80"
+    - "3000:3000"
 
   notes:
     image: yukiiso/micro-notes
     build: ./notes
     ports:
-    - "80:80"
+    - "3000:3000"
+
+  user:
+    image: yukiiso/micro-user
+    build: ./user
+    ports:
+    - "3000:3000"
+
+  tags:
+    image: yukiiso/micro-tags
+    build: ./tags
+    ports:
+    - "3000:3000"
+
+  pushnotifs:
+    image: yukiiso/micro-pushnotifs
+    build: ./push-notification
+    ports:
+    - "3000:3000"

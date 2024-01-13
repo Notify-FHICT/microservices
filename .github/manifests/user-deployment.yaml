@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user
+  namespace: i442651
+spec:
+  progressDeadlineSeconds: 300
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user
+  template:
+    metadata:
+      labels:
+        app: user
+    spec:
+      containers:
+      - name: user
+        image: ghcr.io/Notify-FHICT/microservices/user
+        ports:
+        - containerPort: 3000
+          name: rest
+          protocol: TCP
+        envFrom:
+        - configMapRef:
+            name: user
+ 
