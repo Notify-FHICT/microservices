@@ -6,7 +6,7 @@ on:
       - "user/**"
       - ".github/workflows/**"
     branches:
-      - main
+      - main[]
   pull_request:
     paths:
       - "user/**"
@@ -77,6 +77,13 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Login Kubernetes
         run: ~/K8s_setup_Yuki.sh
