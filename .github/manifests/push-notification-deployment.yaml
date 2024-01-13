@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: push-notification
+  namespace: i442651
+spec:
+  progressDeadlineSeconds: 300
+  replicas: 1
+  selector:
+    matchLabels:
+      app: push-notification
+  template:
+    metadata:
+      labels:
+        app: push-notification
+    spec:
+      containers:
+      - name: push-notification
+        image: ghcr.io/notify-fhict/microservices/push-notification
+        ports:
+        - containerPort: 3000
+          name: rest
+          protocol: TCP
+ 

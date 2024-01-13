@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: agenda
+  namespace: i442651
+spec:
+  progressDeadlineSeconds: 300
+  replicas: 1
+  selector:
+    matchLabels:
+      app: agenda
+  template:
+    metadata:
+      labels:
+        app: agenda
+    spec:
+      containers:
+      - name: agenda
+        image: ghcr.io/notify-fhict/microservices/agenda
+        ports:
+        - containerPort: 3000
+          name: rest
+          protocol: TCP
+ 
