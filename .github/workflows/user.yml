@@ -6,7 +6,7 @@ on:
       - "user/**"
       - ".github/workflows/**"
     branches:
-      - main[]
+      - main
   pull_request:
     paths:
       - "user/**"

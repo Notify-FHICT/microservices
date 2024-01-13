@@ -3,13 +3,13 @@ name: agenda
 on:
   push:
     paths:
-      - ${{ github.workflow }}/**
+      - "agenda/**"
       - ".github/workflows/**"
     branches:
       - main
   pull_request:
     paths:
-      - ${{ github.workflow }}/**
+      - "agenda/**"
     branches:
       - main
 
