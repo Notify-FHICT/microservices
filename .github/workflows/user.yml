@@ -91,7 +91,7 @@ jobs:
       - name: Deploy
         uses: azure/k8s-deploy@v4
         with: 
-          manifest: .github/manifests/user-deployment.yaml
+          manifests: .github/manifests/user-deployment.yaml
           namespace: i442651
           image: ghcr.io/notify-fhict/microservices/${{ github.workflow }}:${{ github.sha }}
             
