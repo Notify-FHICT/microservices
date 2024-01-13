@@ -1,0 +1,133 @@
+name: push-notification
+
+on:
+  push:
+    paths: 
+      - "push-notification/**"
+      - ".github/workflows/**"
+    branches:
+      - main
+  pull_request:
+    paths:
+      - "push-notification/**"
+    branches:
+      - main
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}/${{ github.workflow }}
+    
+jobs:
+  drive:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ github.workflow }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v4
+        with:
+          go-version: "1.21.5"
+      - run: go mod download
+      - run: go build -o main .
+      - run: go test -v ./...
+    
+  upload:
+    runs-on: ubuntu-latest
+    needs: drive
+    if: github.event_name == 'push'
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          
+      - name: Build and push Docker image
+        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+        with:
+          file: ${{ github.workflow }}/Dockerfile
+          context: ${{ github.workflow }}/.
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      # - name: Build and push Docker image
+      #   run: |
+      #     docker build -t ghcr.io/nickonos/spotify/authorization:${{ github.sha }} -f services/authorization/Dockerfile .
+      #     docker push ghcr.io/nickonos/spotify/authorization:${{ github.sha }}
+
+  deploy:
+    runs-on: self-hosted
+    needs: upload
+    if: github.event_name == 'push'
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Login Kubernetes
+        run: ~/K8s_setup_Yuki.sh
+      
+      - name: Deploy
+        uses: azure/k8s-deploy@v4
+        with: 
+          manifests: |
+            .github/manifests/${{ github.workflow }}-deployment.yaml
+          namespace: i442651
+          images: |
+            ghcr.io/notify-fhict/microservices/${{ env.IMAGE_NAME }}:main
+
+  # build:
+  #   runs-on: self-hosted
+  #   steps:
+  #     - uses: actions/checkout@v3
+      
+  #     - name: Log in to Docker Hub
+  #       run:  docker login -u '${{ secrets.DOCKER_USERNAME }}' -p '${{ secrets.DOCKER_PASSWORD }}'
+      
+  #     - name: Build the Docker image
+  #       #run: docker build -t ${{ secrets.DOCKER_USERNAME }}/micro .
+  #       run: docker compose build 
+
+
+  #     - name: Push to docker registry
+  #       #run: docker push ${{ secrets.DOCKER_USERNAME }}/micro
+  #       run: docker compose push
+  #         #start_on_k8:
+  #         #name: start on k8 
+  #         #runs-on: self-hosted
+  #         #steps:
+  #     - name: login vsphere kubectl 
+  #     #  run: echo "/root/K8s_setup_Yuki.sh" > /root/.signature; cat /root/.signature
+  #       run: /root/K8s_setup_Yuki.sh
+  #     - name: remove old dep 
+  #     #  run: echo "kubectl delete deployment micro" > /root/.signature; cat /root/.signature
+  #       run: kubectl delete deployment micro-notes
+  #     - name: remove old dep 
+  #       run: kubectl delete deployment micro-agenda
+
+  #     - name: create new dep 
+  #     #  run: echo "kubectl create deployment micro --image yukiiso/micro" > /root/.signature; cat /root/.signature
+  #       run: kubectl create deployment micro-notes --image ${{ secrets.DOCKER_USERNAME }}/micro-notes
+  #     - name: create new dep 
+  #       run: kubectl create deployment micro-agenda --image ${{ secrets.DOCKER_USERNAME }}/micro-agenda

@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: user
-        image: ghcr.io/notify-fhict/microservices/user
+        image: ghcr.io/notify-fhict/microservices/user:main
         ports:
         - containerPort: 3000
           name: rest

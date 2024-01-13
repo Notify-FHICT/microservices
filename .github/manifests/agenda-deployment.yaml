@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: agenda
-        image: ghcr.io/notify-fhict/microservices/agenda
+        image: ghcr.io/notify-fhict/microservices/agenda:main
         ports:
         - containerPort: 3000
           name: rest

@@ -16,9 +16,10 @@ spec:
     spec:
       containers:
       - name: push-notification
-        image: ghcr.io/notify-fhict/microservices/push-notification
+        image: ghcr.io/notify-fhict/microservices/push-notification:main
         ports:
         - containerPort: 3000
           name: rest
           protocol: TCP
- 
+      imagePullSecrets:
+        - name: ghcr-login-secret
