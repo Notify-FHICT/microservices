@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: notes
+  namespace: i442651
+spec:
+  type: ClusterIP
+  ports:
+  - port: 3000
+    targetPort: 3000  
+    name: rest
+    protocol: TCP
+  selector:
+    app: notes
