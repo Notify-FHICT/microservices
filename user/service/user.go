@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/Notify-FHICT/microservices/service/storage"
+	"github.com/Notify-FHICT/microservices/user/service/storage"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 

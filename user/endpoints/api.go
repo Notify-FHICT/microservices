@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/Notify-FHICT/microservices/service"
+	"github.com/Notify-FHICT/microservices/user/service"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 

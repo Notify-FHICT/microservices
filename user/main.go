@@ -3,9 +3,9 @@ package main
 import (
 	"time"
 
-	"github.com/Notify-FHICT/microservices/endpoints"
-	"github.com/Notify-FHICT/microservices/service"
-	"github.com/Notify-FHICT/microservices/service/storage"
+	"github.com/Notify-FHICT/microservices/user/endpoints"
+	"github.com/Notify-FHICT/microservices/user/service"
+	"github.com/Notify-FHICT/microservices/user/service/storage"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"

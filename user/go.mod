@@ -2,14 +2,11 @@ module github.com/Notify-FHICT/microservices/user
 
 go 1.21.6
 
-replace github.com/Notify-FHICT/microservices/user/service/storage => ./service/storage
-replace github.com/Notify-FHICT/microservices/user/service => ./service
-replace github.com/Notify-FHICT/microservices/user/endpoints => ./endpoints
-
 require (
 	github.com/gofiber/fiber/v2 v2.52.0
 	github.com/prometheus/client_golang v1.18.0
 	go.mongodb.org/mongo-driver v1.13.1
+	
 )
 
 require (
