@@ -1,10 +1,10 @@
-module github.com/Notify-FHICT/microservices
+module github.com/Notify-FHICT/microservices/user
 
 go 1.21.6
 
-replace github.com/Notify-FHICT/microservices/service/storage => ./service/storage
-replace github.com/Notify-FHICT/microservices/service => ./service
-replace github.com/Notify-FHICT/microservices/endpoints => ./endpoints
+replace github.com/Notify-FHICT/microservices/user/service/storage => ./service/storage
+replace github.com/Notify-FHICT/microservices/user/service => ./service
+replace github.com/Notify-FHICT/microservices/user/endpoints => ./endpoints
 
 require (
 	github.com/gofiber/fiber/v2 v2.52.0
