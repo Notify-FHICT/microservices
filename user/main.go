@@ -1,18 +1,46 @@
 package main
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"time"
+
+	"github.com/Notify-FHICT/microservices/endpoints"
+	"github.com/Notify-FHICT/microservices/service"
+	"github.com/Notify-FHICT/microservices/service/storage"
+
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
+)
 
 func main() {
-	app := fiber.New()
 
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Hello, User!")
-	})
+	recordMetrics()
 
-	app.Get("/api/user/*", func(c *fiber.Ctx) error {
-		return c.SendString("API path: " + c.Params("*"))
-		// => API path: user/john
-	})
+	db, err := storage.NewMongoDB()
+	if err != nil {
+		panic(err)
+	}
 
-	app.Listen(":3000")
+	srv := service.NewUserService(db)
+	api := endpoints.NewAPIHandler(srv)
+
+	api.Server() //run! :D
+
+	select {}
+
 }
+
+func recordMetrics() {
+	go func() {
+		for {
+			opsProcessed.Inc()
+			time.Sleep(2 * time.Second)
+		}
+	}()
+}
+
+var (
+	opsProcessed = promauto.NewCounter(prometheus.CounterOpts{
+		Name: "myapp_processed_ops_total",
+		Help: "The total number of processed events",
+	})
+)
