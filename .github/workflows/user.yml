@@ -20,6 +20,8 @@ env:
 jobs:
   drive:
     runs-on: ubuntu-latest
+    env:
+      GOPRIVATE: github.com/Notify-FHICT/microservices/user
     defaults:
       run:
         working-directory: user
