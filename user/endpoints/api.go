@@ -6,6 +6,8 @@ import (
 	"strings"
 
 	"github.com/Notify-FHICT/microservices/user/service"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
@@ -19,11 +21,33 @@ func NewAPIHandler(service *service.Service) APIHandler {
 	}
 }
 
+var (
+	demoGauge = promauto.NewGauge(prometheus.GaugeOpts{
+		Name: "testing trying to autoscale!!!",
+		Help: "testing module",
+	})
+)
+
 func (api *APIHandler) Server() {
+
 	http.Handle("/metrics", promhttp.Handler())
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintln(w, "Hello, User!")
+		fmt.Fprintf(w, "API path: %s", r.RequestURI)
+	})
+
+	http.HandleFunc("/plus", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintln(w, "added 1")
+		demoGauge.Inc()
+
+		fmt.Fprintf(w, "API path: %s", r.RequestURI)
+	})
+
+	http.HandleFunc("/minus", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintln(w, "removed 1")
+		demoGauge.Dec()
+
 		fmt.Fprintf(w, "API path: %s", r.RequestURI)
 	})
 
@@ -34,7 +58,7 @@ func (api *APIHandler) Server() {
 				http.Error(w, err.Error(), http.StatusBadRequest)
 				return
 			} else {
-				fmt.Println(w, "Creation succesfully")
+				fmt.Println(w, "Creation successful")
 			}
 		}
 
