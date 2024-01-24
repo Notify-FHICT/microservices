@@ -2,10 +2,12 @@ package service
 
 import (
 	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"net/http"
+	"reflect"
 
 	"github.com/Notify-FHICT/microservices/user/service/storage"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type Service struct {
@@ -13,20 +15,23 @@ type Service struct {
 }
 
 func NewUserService(collection storage.DB) *Service {
-
 	return &Service{
 		collection,
 	}
-
 }
 
-func decodeIDs(content *http.Request) (*primitive.ObjectID, error) {
-	var id primitive.ObjectID
-	err := json.NewDecoder(content.Body).Decode(&id)
+func decodeIDs(r *http.Request) (*storage.User, error) {
+	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		return nil, err
 	}
-	return &id, nil
+
+	var usr storage.User
+	if err := usr.UnmarshalJSON(body); err != nil {
+		return nil, err
+	}
+
+	return &usr, nil
 }
 
 func decodeUsers(content *http.Request) (*storage.User, error) {
@@ -47,31 +52,40 @@ func (s *Service) CreateUser(w http.ResponseWriter, r *http.Request) error {
 }
 
 func (s *Service) ReadUser(w http.ResponseWriter, r *http.Request) (*storage.User, error) {
-	id, err := decodeIDs(r)
+
+	usr, err := decodeIDs(r)
 	if err != nil {
+		http.Error(w, "Error reading request body", http.StatusBadRequest)
 		return nil, err
 	}
-	return s.c.ReadUser(*id)
+	fmt.Println(reflect.TypeOf(usr))
+	return s.c.ReadUser(usr.ID)
 } //(id primitive.ObjectID) {
 
 func (s *Service) UpdateUser(w http.ResponseWriter, r *http.Request) (*storage.User, error) {
-	usr, err := decodeUsers(r)
+	usr, err := decodeIDs(r)
 	if err != nil {
+		http.Error(w, "Error reading request body", http.StatusBadRequest)
 		return nil, err
 	}
 
-	// result, err :=
+	// usr, err := decodeUsers(r)
+	// if err != nil {
+	// 	return nil, err
+	// }
+
 	return s.c.UpdateUser(*usr)
-	// log.Print(result)
-	// return err
 }
 
 func (s *Service) DeleteUser(w http.ResponseWriter, r *http.Request) error {
-	id, err := decodeIDs(r)
+	usr, err := decodeIDs(r)
 	if err != nil {
+		http.Error(w, "Error reading request body", http.StatusBadRequest)
 		return err
 	}
-	return s.c.DeleteUser(*id)
-	// log.Print(usr)
-	// return err
+	// id, err := decodeIDs(r)
+	// if err != nil {
+	// 	return err
+	// }
+	return s.c.DeleteUser(usr.ID)
 }

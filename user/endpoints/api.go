@@ -23,7 +23,7 @@ func NewAPIHandler(service *service.Service) APIHandler {
 
 var (
 	demoGauge = promauto.NewGauge(prometheus.GaugeOpts{
-		Name: "testing trying to autoscale!!!",
+		Name: "Gauge_IncDec",
 		Help: "testing module",
 	})
 )
@@ -65,6 +65,7 @@ func (api *APIHandler) Server() {
 	})
 
 	http.HandleFunc("/read", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Print("test")
 		if strings.Contains(strings.ToLower(r.Header.Get("Content-Type")), "json") {
 			usr, err := api.s.ReadUser(w, r)
 			if err != nil {
@@ -72,7 +73,7 @@ func (api *APIHandler) Server() {
 				return
 			}
 
-			fmt.Fprintf(w, "Succesfully Read; %s", usr)
+			fmt.Fprintf(w, "Successfully Read; %s", usr)
 		}
 	})
 
@@ -84,7 +85,7 @@ func (api *APIHandler) Server() {
 				return
 			}
 
-			fmt.Fprintf(w, "Succesfully Updated to; %s", usr)
+			fmt.Fprintf(w, "Successfully Updated to; %s", usr)
 		}
 	})
 
@@ -95,7 +96,7 @@ func (api *APIHandler) Server() {
 				http.Error(w, err.Error(), http.StatusBadRequest)
 				return
 			} else {
-				fmt.Println(w, "Succesfully deleted")
+				fmt.Println(w, "Successfully deleted")
 			}
 		}
 	})
