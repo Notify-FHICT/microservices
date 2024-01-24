@@ -13,4 +13,9 @@ RUN go mod download
 # https://docs.docker.com/engine/reference/builder/#copy
 COPY ./ ./
 
+RUN CGO_ENABLED=0 GOOS=linux go build -o /service
+
+
+EXPOSE 3000
+
 CMD ["/service"]
