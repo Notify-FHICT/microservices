@@ -103,6 +103,6 @@ func (api *APIHandler) Server() {
 
 	http.ListenAndServe(":3000", nil)
 
-	fmt.Println("I died")
+	fmt.Println("Server closed oh no!")
 
 }

@@ -51,7 +51,7 @@ func (s *Service) CreateUser(w http.ResponseWriter, r *http.Request) error {
 	return s.c.CreateUser(*usr)
 }
 
-func (s *Service) ReadUser(w http.ResponseWriter, r *http.Request) (*storage.User, error) {
+func (s *Service) ReadUser(w http.ResponseWriter, r *http.Request) ([]byte, error) {
 
 	usr, err := decodeIDs(r)
 	if err != nil {
@@ -59,7 +59,13 @@ func (s *Service) ReadUser(w http.ResponseWriter, r *http.Request) (*storage.Use
 		return nil, err
 	}
 	fmt.Println(reflect.TypeOf(usr))
-	return s.c.ReadUser(usr.ID)
+	usr2, err2 := s.c.ReadUser(usr.ID)
+	if err != nil {
+		http.Error(w, "Database Error", http.StatusBadRequest)
+		return nil, err2
+	}
+	return json.Marshal(usr2)
+
 } //(id primitive.ObjectID) {
 
 func (s *Service) UpdateUser(w http.ResponseWriter, r *http.Request) (*storage.User, error) {
