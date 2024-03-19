@@ -45,7 +45,7 @@ func main() {
 
 	recordMetrics()
 
-	conn, err := amqp.Dial("amqp://guest:guest@10.244.0.5:25672/")
+	conn, err := amqp.Dial("amqp://guest:guest@10.101.45.75:5672/")
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 
