@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: tags
-  namespace: i442651
+  namespace: default
 spec:
   progressDeadlineSeconds: 300
   replicas: 1
