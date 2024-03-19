@@ -87,9 +87,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       
-      - name: Login Kubernetes
-        run: ~/K8s_setup_Yuki.sh
-      
       - name: Deploy
         uses: azure/k8s-deploy@v4
         with: 
