@@ -1,4 +1,4 @@
-name: notes
+@ame: notes
 
 on:
   push:
@@ -91,6 +91,6 @@ jobs:
           manifests: |
             .github/manifests/${{ github.workflow }}-deployment.yaml
             .github/manifests/${{ github.workflow }}-service.yaml
-          namespace: i442651
+          namespace: default
           images: |
             ghcr.io/notify-fhict/microservices/${{ env.IMAGE_NAME }}:main
