@@ -1,4 +1,4 @@
-@ame: notes
+name: notes
 
 on:
   push:
