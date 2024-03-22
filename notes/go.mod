@@ -1,4 +1,4 @@
-module github.com/Notify-FHICT/microservices
+module github.com/Notify-FHICT/microservices/notes
 
 go 1.21.4
 
