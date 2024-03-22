@@ -101,7 +101,7 @@ func (db MongoDB) DeleteEvent(id primitive.ObjectID) error {
 	if err != nil {
 		return err
 	}
-	log.Printf("%s has been deleted", result)
+	log.Printf("%s has been deleted", result.ID)
 	return err
 }
 
