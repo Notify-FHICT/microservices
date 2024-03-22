@@ -141,12 +141,17 @@ func (api *APIHandler) Server() {
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusUnprocessableEntity)
 			}
-			LinkEvent(note.ID.Hex())
+
+			var send models.Middle
+			send.NoteID = note.ID
+			send.ID = note.EventID
+			fmt.Println(send)
+			LinkEvent(send)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusServiceUnavailable)
 			}
 			w.WriteHeader(http.StatusOK)
-			w.Write([]byte("Entry successfully modified"))
+			w.Write([]byte("Operation Queued"))
 		default:
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		}

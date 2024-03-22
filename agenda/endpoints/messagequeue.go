@@ -1,10 +1,13 @@
 package endpoints
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"log"
 
 	"github.com/Notify-FHICT/microservices/agenda/storage"
+	"github.com/Notify-FHICT/microservices/agenda/storage/models"
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
@@ -49,6 +52,21 @@ func (rmq *RMQHandler) MessageBus() {
 	go func() {
 		for msg := range msgs {
 			fmt.Printf("Received Message: %s\n", msg.Body)
+			var obj models.UpdateNoteID
+			buf := bytes.NewBuffer(msg.Body)
+			decoder := json.NewDecoder(buf)
+			err := decoder.Decode(&obj)
+			if err != nil {
+				fmt.Println(err)
+			} else {
+				fmt.Println(obj)
+				err := rmq.c.LinkNoteID(obj)
+				if err != nil {
+					fmt.Println(err)
+				}
+				fmt.Println("YIPPIE")
+			}
+
 		}
 	}()
 

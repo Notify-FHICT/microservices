@@ -1,10 +1,14 @@
 package endpoints
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
+	"fmt"
 	"log"
 	"time"
 
+	"github.com/Notify-FHICT/microservices/notes/storage/models"
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
@@ -14,7 +18,7 @@ func failOnError(err error, msg string) {
 	}
 }
 
-func LinkEvent(body string) {
+func LinkEvent(body models.Middle) {
 	conn, err := amqp.Dial("amqp://guest:guest@10.101.45.75:5672/")
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
@@ -36,6 +40,11 @@ func LinkEvent(body string) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
+	bytes, err := serialize(body)
+	if err != nil {
+		fmt.Println(err)
+	}
+
 	err = ch.PublishWithContext(ctx,
 		"",         // exchange
 		queue.Name, // key
@@ -43,11 +52,18 @@ func LinkEvent(body string) {
 		false,      // immediate
 		amqp.Publishing{
 			ContentType: "text/plain",
-			Body:        []byte(body),
+			Body:        []byte(bytes),
 		},
 	)
 
 	failOnError(err, "Failed to publish a message")
 	log.Printf(" [x] Sent %s\n", body)
 
+}
+
+func serialize(msg models.Middle) ([]byte, error) {
+	var b bytes.Buffer
+	encoder := json.NewEncoder(&b)
+	err := encoder.Encode(msg)
+	return b.Bytes(), err
 }
