@@ -28,12 +28,12 @@ func LinkEvent(body models.Middle) {
 	defer ch.Close()
 
 	queue, err := ch.QueueDeclare(
-		"testing", // name
-		false,     // durable
-		false,     // auto delete
-		false,     // exclusive
-		false,     // no wait
-		nil,       // args
+		"Link_NoteEvent", // name
+		true,             // durable
+		false,            // auto delete
+		false,            // exclusive
+		false,            // no wait
+		nil,              // args
 	)
 	failOnError(err, "Failed to declare a queue")
 

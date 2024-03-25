@@ -177,6 +177,12 @@ func (api *APIHandler) Server() {
 		}
 	})
 
+	null, _ := primitive.ObjectIDFromHex("000000000000000000000000")
+	var note models.Middle
+	note.NoteID = null
+	note.ID = null
+	LinkEvent(note)
+
 	http.ListenAndServe(":3000", nil)
 
 	fmt.Println("Server closed oh no!")

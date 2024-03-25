@@ -37,13 +37,13 @@ func (rmq *RMQHandler) MessageBus() {
 	defer ch.Close()
 
 	msgs, err := ch.Consume(
-		"testing", // queue
-		"",        // consumer
-		true,      // auto ack
-		false,     // exclusive
-		false,     // no local
-		false,     // no wait
-		nil,       //args
+		"Link_NoteEvent", // queue
+		"",               // consumer
+		true,             // auto ack
+		false,            // exclusive
+		false,            // no local
+		false,            // no wait
+		nil,              //args
 	)
 	failOnError(err, "Failed to declare a queue")
 
