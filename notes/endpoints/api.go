@@ -64,7 +64,7 @@ func (api *APIHandler) Server() {
 			}
 			note, err := api.c.ReadNote(oid)
 			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(http.StatusFound)
+			w.WriteHeader(http.StatusOK)
 			json.NewEncoder(w).Encode(note)
 		default:
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -181,7 +181,7 @@ func (api *APIHandler) Server() {
 	var note models.Middle
 	note.NoteID = null
 	note.ID = null
-	LinkEvent(note)
+	// LinkEvent(note)
 
 	http.ListenAndServe(":3000", nil)
 

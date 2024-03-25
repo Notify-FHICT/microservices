@@ -65,7 +65,7 @@ func (api *APIHandler) Server() {
 			}
 			event, err := api.c.ReadEvent(oid)
 			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(http.StatusFound)
+			w.WriteHeader(http.StatusOK)
 			json.NewEncoder(w).Encode(event)
 		default:
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
