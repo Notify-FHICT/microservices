@@ -181,7 +181,7 @@ func (api *APIHandler) Server() {
 	var note models.Middle
 	note.NoteID = null
 	note.ID = null
-	// LinkEvent(note)
+	LinkEvent(note)
 
 	http.ListenAndServe(":3000", nil)
 
