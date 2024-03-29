@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/Notify-FHICT/microservices/agenda/endpoints"
 	"github.com/Notify-FHICT/microservices/agenda/storage"
 )
@@ -17,6 +19,7 @@ func main() {
 
 	go rmq.MessageBus()
 
+	fmt.Println("starting server")
 	api.Server() //run! :D
 
 	select {}
