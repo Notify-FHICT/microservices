@@ -132,6 +132,15 @@ func (api *APIHandler) Server() {
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusServiceUnavailable)
 			}
+			var send models.Middle
+			send.NoteID = note.ID
+			tmp, err := primitive.ObjectIDFromHex("000000000000000000000000")
+			send.ID = tmp
+			fmt.Println(send)
+			LinkEvent(send)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusServiceUnavailable)
+			}
 			w.WriteHeader(http.StatusOK)
 			w.Write([]byte("Entry successfully removed"))
 			reqSuccessfullyProcessed.Inc()

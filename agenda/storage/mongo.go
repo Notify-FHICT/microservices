@@ -22,6 +22,7 @@ type DB interface {
 	DeleteEvent(id primitive.ObjectID) error
 	ReadDashboard(id primitive.ObjectID) (*[]models.Event, error)
 	LinkNoteID(event models.UpdateNoteID) error
+	UnlinkNoteID(event models.UpdateNoteID) error
 	LinkTagID(event models.UpdateTagID) error
 }
 
@@ -124,6 +125,19 @@ func (db MongoDB) LinkNoteID(event models.UpdateNoteID) error {
 	update := bson.D{{"$set", bson.D{{"noteID", event.NoteID}}}}
 
 	result, err := db.collection.UpdateOne(context.TODO(), filter, update)
+
+	if result.ModifiedCount != 1 || err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (db MongoDB) UnlinkNoteID(event models.UpdateNoteID) error {
+	filter := bson.D{{Key: "noteID", Value: event.NoteID}}
+	update := bson.D{{"$set", bson.D{{"noteID", event.ID}}}}
+
+	result, err := db.collection.UpdateMany(context.TODO(), filter, update)
 
 	if result.ModifiedCount != 1 || err != nil {
 		return err

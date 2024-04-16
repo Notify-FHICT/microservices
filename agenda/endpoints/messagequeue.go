@@ -60,11 +60,17 @@ func (rmq *RMQHandler) MessageBus() {
 				fmt.Println(err)
 			} else {
 				fmt.Println(obj)
-				err := rmq.c.LinkNoteID(obj)
-				if err != nil {
-					fmt.Println(err)
+				if obj.ID.IsZero() {
+					err := rmq.c.UnlinkNoteID(obj)
+					if err != nil {
+						fmt.Println(err)
+					}
+				} else {
+					err := rmq.c.LinkNoteID(obj)
+					if err != nil {
+						fmt.Println(err)
+					}
 				}
-				fmt.Println("YIPPIE")
 			}
 
 		}
