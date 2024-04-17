@@ -6,6 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+// Note represents a note entity.
 type Note struct {
 	ID      primitive.ObjectID `bson:"_id,omitempty"`
 	UserID  primitive.ObjectID `bson:"userID"`
@@ -14,6 +15,7 @@ type Note struct {
 	Content string             `bson:"content"`
 }
 
+// UnmarshalJSON customizes JSON unmarshaling for the Note struct.
 func (m *Note) UnmarshalJSON(data []byte) error {
 	// Define a custom type to unmarshal the raw JSON data
 	type Alias Note
@@ -33,6 +35,7 @@ func (m *Note) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
+	// Initialize a null ObjectID
 	null, err := primitive.ObjectIDFromHex("000000000000000000000000")
 	if err != nil {
 		return err
@@ -52,7 +55,7 @@ func (m *Note) UnmarshalJSON(data []byte) error {
 		objNoteTagID = null
 	}
 
-	// Assign the converted ObjectID to the main struct
+	// Assign the converted ObjectIDs to the main struct
 	m.ID = objNoteID
 	m.UserID = objNoteUserID
 	m.TagID = objNoteTagID

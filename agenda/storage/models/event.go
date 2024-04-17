@@ -7,6 +7,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+// Event represents an event in the system
 type Event struct {
 	ID     primitive.ObjectID `bson:"_id,omitempty"`
 	UserID primitive.ObjectID `bson:"userID"`
@@ -16,6 +17,7 @@ type Event struct {
 	Title  string             `bson:"title"`
 }
 
+// UnmarshalJSON unmarshals JSON data into the Event struct
 func (m *Event) UnmarshalJSON(data []byte) error {
 	// Define a custom type to unmarshal the raw JSON data
 	type Alias Event
@@ -37,6 +39,7 @@ func (m *Event) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
+	// Initialize null ObjectID for default values
 	null, err := primitive.ObjectIDFromHex("000000000000000000000000")
 	if err != nil {
 		return err
@@ -55,7 +58,6 @@ func (m *Event) UnmarshalJSON(data []byte) error {
 	if err != nil {
 		objEventTagID = null
 	}
-
 	objEventNoteID, err := primitive.ObjectIDFromHex(aux.NoteID)
 	if err != nil {
 		objEventNoteID = null
@@ -66,7 +68,7 @@ func (m *Event) UnmarshalJSON(data []byte) error {
 	}
 	objEventTime := primitive.NewDateTimeFromTime(datetime)
 
-	// Assign the converted ObjectID to the main struct
+	// Assign the converted ObjectID and DateTime to the main struct
 	m.ID = objEventID
 	m.UserID = objEventUserID
 	m.TagID = objEventTagID

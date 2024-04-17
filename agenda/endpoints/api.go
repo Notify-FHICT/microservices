@@ -16,16 +16,19 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+// APIHandler handles incoming HTTP requests for agenda management
 type APIHandler struct {
 	c storage.DB
 }
 
+// NewAPIHandler creates a new APIHandler with the provided collection
 func NewAPIHandler(collection storage.DB) APIHandler {
 	return APIHandler{
 		collection,
 	}
 }
 
+// Define Prometheus metrics
 var histogram = promauto.NewHistogram(prometheus.HistogramOpts{
 	Name:    "request_duration_seconds",
 	Help:    "Duration of the request.",
@@ -45,9 +48,12 @@ var (
 	})
 )
 
+// Server starts the HTTP server for handling agenda management requests
 func (api *APIHandler) Server() {
+	// Expose Prometheus metrics endpoint
 	http.Handle("/metrics", promhttp.Handler())
 
+	// Handle "create" endpoint
 	http.HandleFunc("/create", func(w http.ResponseWriter, r *http.Request) {
 		now := time.Now()
 		reqProcessed.Inc()
@@ -56,9 +62,9 @@ func (api *APIHandler) Server() {
 			// Create a new record.
 			var event models.Event
 			err := json.NewDecoder(r.Body).Decode(&event)
-			// err := event.UnmarshalJSON([]byte(r.Body.Close().Error()))
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+				return
 			}
 			api.c.CreateEvent(event)
 			w.Header().Set("Content-Type", "application/json")
@@ -71,6 +77,7 @@ func (api *APIHandler) Server() {
 		histogram.Observe(time.Since(now).Seconds())
 	})
 
+	// Handle "read" endpoint
 	http.HandleFunc("/read/", func(w http.ResponseWriter, r *http.Request) {
 		now := time.Now()
 		reqProcessed.Inc()
@@ -81,8 +88,13 @@ func (api *APIHandler) Server() {
 			oid, err := primitive.ObjectIDFromHex(id)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+				return
 			}
 			event, err := api.c.ReadEvent(oid)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusServiceUnavailable)
+				return
+			}
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusOK)
 			json.NewEncoder(w).Encode(event)
@@ -93,6 +105,7 @@ func (api *APIHandler) Server() {
 		histogram.Observe(time.Since(now).Seconds())
 	})
 
+	// Handle "update" endpoint
 	http.HandleFunc("/update", func(w http.ResponseWriter, r *http.Request) {
 		now := time.Now()
 		reqProcessed.Inc()
@@ -103,10 +116,12 @@ func (api *APIHandler) Server() {
 			err := json.NewDecoder(r.Body).Decode(&event)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+				return
 			}
 			out, err := api.c.UpdateEvent(event)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusServiceUnavailable)
+				return
 			}
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusOK)
@@ -118,6 +133,7 @@ func (api *APIHandler) Server() {
 		histogram.Observe(time.Since(now).Seconds())
 	})
 
+	// Handle "link_noteID" endpoint
 	http.HandleFunc("/link_noteID", func(w http.ResponseWriter, r *http.Request) {
 		now := time.Now()
 		reqProcessed.Inc()
@@ -128,10 +144,12 @@ func (api *APIHandler) Server() {
 			err := json.NewDecoder(r.Body).Decode(&event)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+				return
 			}
 			err = api.c.LinkNoteID(event)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusServiceUnavailable)
+				return
 			}
 			w.WriteHeader(http.StatusOK)
 			w.Write([]byte("Entry successfully modified"))
@@ -142,6 +160,7 @@ func (api *APIHandler) Server() {
 		histogram.Observe(time.Since(now).Seconds())
 	})
 
+	// Handle "link_tagID" endpoint
 	http.HandleFunc("/link_tagID", func(w http.ResponseWriter, r *http.Request) {
 		now := time.Now()
 		reqProcessed.Inc()
@@ -152,10 +171,12 @@ func (api *APIHandler) Server() {
 			err := json.NewDecoder(r.Body).Decode(&event)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+				return
 			}
 			err = api.c.LinkTagID(event)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusServiceUnavailable)
+				return
 			}
 			w.WriteHeader(http.StatusOK)
 			w.Write([]byte("Entry successfully modified"))
@@ -166,6 +187,7 @@ func (api *APIHandler) Server() {
 		histogram.Observe(time.Since(now).Seconds())
 	})
 
+	// Handle "delete" endpoint
 	http.HandleFunc("/delete", func(w http.ResponseWriter, r *http.Request) {
 		now := time.Now()
 		reqProcessed.Inc()
@@ -176,10 +198,12 @@ func (api *APIHandler) Server() {
 			err := json.NewDecoder(r.Body).Decode(&event)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+				return
 			}
 			err = api.c.DeleteEvent(event.ID)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusServiceUnavailable)
+				return
 			}
 			w.WriteHeader(http.StatusOK)
 			w.Write([]byte("Entry successfully removed"))
@@ -190,6 +214,7 @@ func (api *APIHandler) Server() {
 		histogram.Observe(time.Since(now).Seconds())
 	})
 
+	// Handle "dashboard" endpoint
 	http.HandleFunc("/dashboard/", func(w http.ResponseWriter, r *http.Request) {
 		now := time.Now()
 		reqProcessed.Inc()
@@ -200,10 +225,12 @@ func (api *APIHandler) Server() {
 			oid, err := primitive.ObjectIDFromHex(id)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+				return
 			}
 			out, err := api.c.ReadDashboard(oid)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusServiceUnavailable)
+				return
 			}
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusOK)
@@ -215,8 +242,9 @@ func (api *APIHandler) Server() {
 		histogram.Observe(time.Since(now).Seconds())
 	})
 
+	// Start HTTP server on port 3000
 	http.ListenAndServe(":3000", nil)
 
+	// Print a message indicating server closure
 	fmt.Println("Server closed oh no!")
-
 }

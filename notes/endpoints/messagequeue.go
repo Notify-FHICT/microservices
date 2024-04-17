@@ -12,12 +12,14 @@ import (
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
+// failOnError logs a message and panics if an error is not nil.
 func failOnError(err error, msg string) {
 	if err != nil {
 		log.Panicf("%s: %s", msg, err)
 	}
 }
 
+// LinkEvent sends a message to RabbitMQ to link a note to an event.
 func LinkEvent(body models.Middle) {
 	conn, err := amqp.Dial("amqp://guest:guest@10.101.45.75:5672/")
 	failOnError(err, "Failed to connect to RabbitMQ")
@@ -61,6 +63,7 @@ func LinkEvent(body models.Middle) {
 
 }
 
+// serialize serializes a Middle object into bytes.
 func serialize(msg models.Middle) ([]byte, error) {
 	var b bytes.Buffer
 	encoder := json.NewEncoder(&b)

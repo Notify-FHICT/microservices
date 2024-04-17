@@ -8,16 +8,19 @@ import (
 )
 
 func main() {
-
+	// Initialize MongoDB database
 	db, err := storage.NewMongoDB()
 	if err != nil {
 		panic(err)
 	}
 
+	// Initialize API handler with the database
 	api := endpoints.NewAPIHandler(db)
 
-	fmt.Println("starting server")
-	api.Server() //run! :D
+	// Start the server
+	fmt.Println("Starting server")
+	api.Server()
 
+	// Block indefinitely to keep the program running
 	select {}
 }
